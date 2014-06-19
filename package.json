@@ -1,0 +1,33 @@
+{
+  "name": "hubot-twofactor",
+  "version": "0.1.0",
+  "description": "POST endpoint to accept webhook.",
+  "main": "index.coffee",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/delianides/hubot-twofactor"
+  },
+  "keywords": [
+    "hubot",
+    "security",
+    "twillio",
+    "two factor",
+    "authentication"
+  ],
+  "author": "Drew Delianides",
+  "license": "MIT",
+  "dependencies": {
+    "coffee-script": "~1.6",
+    "twilio": "~1.6.0"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*",
+    "sinon-chai": "*",
+    "sinon": "*"
+  },
+  "bugs": {
+    "url": "https://github.com/delianides/hubot-twofactor/issues"
+  },
+  "homepage": "https://github.com/delianides/hubot-twofactor"
+}

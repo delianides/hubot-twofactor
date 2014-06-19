@@ -26,5 +26,7 @@ module.exports = (robot) ->
     twilio.getSms messageId, (error, sms) ->
       robot.messageRoom room, "#{sms.body}"
 
+    res.end JSON.stringify('done')
+
 
 

@@ -24,9 +24,11 @@ module.exports = (robot) ->
     messageId = req.body.MessageSid
 
     twilio.getSms messageId, (error, sms) ->
-      robot.messageRoom room, "#{sms.body}"
+      robot.send room, "#{sms.body}"
 
-    res.end JSON.stringify('done')
+    res.writeHead 200, {'Content-Type': 'text/plain'}
+    res.end 'Thanks\n'
+
 
 
 

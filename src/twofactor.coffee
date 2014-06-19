@@ -8,10 +8,12 @@
 #   TWILIO_ACCOUNT_SID
 #   TWILIO_AUTH_TOKEN
 #   HUBOT_TWOFACTOR_ROOM
+#   HEROKU_URL
 #
 # Commands:
-#   hubot twofactor number, displays the number that will be contacted
-#   hubot twofactor set response <message>, A message that is played back when#     if someone calls.
+#   hubot 2fa number, displays the number that will be contacted
+#   hubot 2fa set response <message>, A message that is played back when someone calls.
+#   hubot 2fa set urls, Sets the URLs in twilio for the specified number.
 #
 # URLs:
 #   POST /hubot/sms/twofactor

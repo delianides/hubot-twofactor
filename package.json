@@ -1,6 +1,6 @@
 {
   "name": "hubot-twofactor",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "POST endpoint to accept webhook.",
   "main": "index.coffee",
   "repository": {

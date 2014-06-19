@@ -4,13 +4,18 @@
 # Dependencies:
 #   "twilio": "~1.6.0"
 #
-# Commands:
+# Configuration:
 #   TWILIO_ACCOUNT_SID
 #   TWILIO_AUTH_TOKEN
 #   HUBOT_TWOFACTOR_ROOM
 #
+# Commands:
+#   hubot twofactor number, displays the number that will be contacted
+#   hubot twofactor set response <message>, A message that is played back when#     if someone calls.
+#
 # URLs:
 #   POST /hubot/sms/twofactor
+#   GET /hubot/call/twofactor
 #
 # Author:
 #   delianides
@@ -19,6 +24,44 @@
 twilio = require('twilio')()
 
 module.exports = (robot) ->
+  robot.respond /2fa number/i, (msg) ->
+      phone = get2faNumber()
+      msg.send "Two Factor Authentication: #{phone.phone}"
+
+  robot.respond /2fa set response (.*)/i, (msg) ->
+    robot.brain.set 'twilioTwofactorResponse', msg.match[1]
+    msg.reply 'Ok, Your response is set to: "'+robot.brain.get('twilioTwofactorResponse')+'"'
+
+  robot.respond /2fa set urls/i, (msg) ->
+    if process.env.HEROKU_URL is '' or process.env.HEROKU_URL is null
+      msg.send "HEROKU_URL config is not set."
+      return false
+    else
+      twilio.incomingPhoneNumbers.list({ friendlyName: 'hubot-2fa', }).then (results) ->
+        urls = {
+            smsMethod: "POST",
+            smsUrl: "#{process.env.HEROKU_URL}/hubot/sms/twofactor",
+            voiceMethod: "GET",
+            voiceUrl: "#{process.env.HEROKU_URL}/hubot/call/twofactor"
+          }
+
+        twilio.incomingPhoneNumbers(results.incoming_phone_numbers[0].sid).update urls, (error, data) ->
+          if error
+            msg.send "There was an error with Twilio!"
+          else
+            msg.send "Twilio webhook URLs have been updated!"
+
+
+  robot.router.get '/hubot/call/twofactor', (req, res) ->
+    twiml = robot.brain.get('twilioTwofactorResponse')
+    if twiml is null or twiml is ''
+      twiml = "Thanks, but no one is at this number. Have a nice day!"
+
+    resp = new twilio.TwimlResponse()
+    resp.say(twiml)
+    res.writeHead 200, {'Content-type': 'text/plain'}
+    res.end 'Thanks\n'
+
   robot.router.post '/hubot/sms/twofactor', (req, res) ->
     room = process.env.HUBOT_TWOFACTOR_ROOM
     messageId = req.body.MessageSid
@@ -28,7 +71,3 @@ module.exports = (robot) ->
 
     res.writeHead 200, {'Content-Type': 'text/plain'}
     res.end 'Thanks\n'
-
-
-
-

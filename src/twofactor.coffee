@@ -27,8 +27,8 @@ twilio = require('twilio')()
 
 module.exports = (robot) ->
   robot.respond /2fa number/i, (msg) ->
-      phone = get2faNumber()
-      msg.send "Two Factor Authentication: #{phone.phone}"
+      twilio.incomingPhoneNumbers.list({ friendlyName: 'hubot-2fa', }).then (results) ->
+      msg.send "Set Two Factor Authentication: #{results.incoming_phone_numbers[0].phone_number}"
 
   robot.respond /2fa set response (.*)/i, (msg) ->
     robot.brain.set 'twilioTwofactorResponse', msg.match[1]

@@ -2,7 +2,8 @@
 #   Accepts a POST request via webhook from the twillio service.
 #
 # Dependencies:
-#   "twilio": "~1.6.0"
+#   "twilio": "~1.6.0",
+#   "valid-url": "1.0.9"
 #
 # Configuration:
 #   TWILIO_ACCOUNT_SID
@@ -24,6 +25,7 @@
 #
 
 twilio = require('twilio')()
+url = require('valid-url')
 
 module.exports = (robot) ->
   robot.respond /2fa number/i, (msg) ->
@@ -31,6 +33,7 @@ module.exports = (robot) ->
         msg.send "Set Two Factor Authentication: #{results.incoming_phone_numbers[0].phone_number}"
 
   robot.respond /2fa set response (.*)/i, (msg) ->
+    response = msg.match[1]
     robot.brain.set 'twilioTwofactorResponse', msg.match[1]
     msg.reply 'Ok, Your response is set to: "'+robot.brain.get('twilioTwofactorResponse')+'"'
 
@@ -56,13 +59,18 @@ module.exports = (robot) ->
 
   robot.router.get '/hubot/call/twofactor', (req, res) ->
     twiml = robot.brain.get('twilioTwofactorResponse')
+
     if twiml is null or twiml is ''
       twiml = "Thanks, but no one is at this number. Have a nice day!"
 
+    twilio = require('twilio')
     resp = new twilio.TwimlResponse()
-    resp.say(twiml)
-    res.writeHead 200, {'Content-type': 'text/plain'}
-    res.end 'Thanks\n'
+    if url.isWebUri(twiml)
+      resp.play(twiml)
+    else
+      resp.say(twiml)
+    res.writeHead 200, {'Content-type': 'text/xml'}
+    res.end resp.toString()
 
   robot.router.post '/hubot/sms/twofactor', (req, res) ->
     room = process.env.HUBOT_TWOFACTOR_ROOM

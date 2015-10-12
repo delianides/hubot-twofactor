@@ -1,6 +1,6 @@
 {
   "name": "hubot-twofactor",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Two-Factor Authencation (2fa) through Hubot.",
   "main": "index.coffee",
   "repository": {

@@ -1,7 +1,7 @@
 {
   "name": "hubot-twofactor",
   "version": "0.3.4",
-  "description": "POST endpoint to accept webhook.",
+  "description": "Two-Factor Authencation (2fa) through Hubot.",
   "main": "index.coffee",
   "repository": {
     "type": "git",

@@ -24,7 +24,11 @@
 #   delianides
 #
 
-twilio = require('twilio')()
+if process.env.TWILIO_ACCOUNT_SID and process.env.TWILIO_AUTH_TOKEN
+  twilio = require('twilio')(process.env.HUBOT_TWILIO_ACCOUNT_SID, process.env.HUBOT_TWILIO_AUTH_TOKEN)
+else
+  return false
+
 url = require('valid-url')
 
 module.exports = (robot) ->
